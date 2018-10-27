@@ -1,0 +1,13 @@
+try installing the last version of libiio from the source code available on the libiio's github. The file is a .tar.gz file. When compiling, you will need to type like this:
+g++ -std=gnu++11 -I/root/libiio-0.14/install/include -L/root/libiio-0.14/install/lib code.cpp -o code -liio
+The paths might change according to how you have installed libiio. I recommend you to install as described next:
+1 - install the packages listed in https://wiki.analog.com/resources/tools-software/linux-software/libiio
+2 - download the source code in https://github.com/analogdevicesinc/libiio/releases
+3 - unzip
+4 - 
+# mkdir install
+# cd libiio-0.1x/
+# cmake -DCMAKE_INSTALL-PREFIX=/<your-path>/libiio-0.1x/install
+# make install
+In case you have problems with the install, delete the install/ folder
+

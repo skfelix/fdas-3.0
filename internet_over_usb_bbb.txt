@@ -1,0 +1,79 @@
+
+
+#enxd05fb8b26dda is the BeagleBone USB connection
+#wlp12s0 is my internet facing interface, eth5 is the
+#adapt to your configs according to ifconfig
+
+ BeagleBone USB connection
+
+#### ON BeagleBone ######
+ifconfig usb0 192.168.7.2
+route add default gw 192.168.7.1
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+
+#### ON HOST ####
+
+ifconfig enxd05fb8b26dda 192.168.7.1
+iptables --table nat --append POSTROUTING --out-interface wlp12s0 -j MASQUERADE
+iptables --append FORWARD --in-interface enxd05fb8b26dda -j ACCEPT
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+
+########### MAKING IT PERSISTENT ###########
+#this will enable internet on the BB every time you boot it
+
+#### ON BeagleBone ######
+
+mkdir /usr/share/internet_over_usb
+nano /usr/share/internet_over_usb/executa_comandos.sh
+
+#!/bin/bash
+sleep 15
+ifconfig usb0 192.168.7.2
+route add default gw 192.168.7.1
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+
+
+nano /lib/systemd/system/internet_over_usb.service
+
+[Unit]
+Description=Internet Over USB BBB Service
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/share/internet_over_usb
+ExecStart=/bin/bash executa_comandos.sh
+SyslogIdentifier=internet_over_usb
+
+[Install]
+WantedBy=multi-user.target
+    
+systemctl enable internet_over_usb.service
+systemctl start internet_over_usb.service
+
+#### ON HOST ####
+
+mkdir /usr/share/internet_over_usb
+nano /usr/share/internet_over_usb/executa_comandos.sh
+
+ifconfig enxd05fb8b26dda 192.168.7.1
+iptables --table nat --append POSTROUTING --out-interface wlp12s0 -j MASQUERADE
+iptables --append FORWARD --in-interface enxd05fb8b26dda -j ACCEPT
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+nano /lib/systemd/system/internet_over_usb.service
+
+[Unit]
+Description=Internet Over USB BBB Service
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/share/internet_over_usb
+ExecStart=/bin/bash executa_comandos.sh
+SyslogIdentifier=internet_over_usb
+
+[Install]
+WantedBy=multi-user.target
+    
+systemctl enable internet_over_usb.service
+systemctl start internet_over_usb.service

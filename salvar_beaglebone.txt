@@ -1,0 +1,17 @@
+Em seu computador local:
+- Baixe a última imagem do Debian (Stretch IoT) no site:
+https://beagleboard.org/latest-images
+- Descompacte o arquivo 
+<usr>@local:~$ tar xf bone-debian-9.3-iot-armhf-2018-03-05-4gb.img.xz 
+- Copie a imagem para um cartão SD
+cp bone-debian-9.3-iot-armhf-2018-03-05-4gb.img /media/<usr>/<SD-card>
+- Abra o arquivo uEnv.txt da imagem
+local@local:~$ sudo nano /media/<usr>/<SD-card>/boot/uEnv.txt
+- Tenha certeza que a seguinte linha está comentada (última linha do arquivo)
+#cmdline=init=/opt/scripts/tools/eMMC/init-eMMC-flasher-v3.sh
+- Insira o cartão SD no BBB
+- Faça o login no usuário debian:temppwd
+debian@beaglebone:~$ sudo mkdir /tmp/mount
+debian@beaglebone:~$ sudo mount /dev/mmcblk1p1 /tmp/mount
+debian@beaglebone:~$ sudo nano /tmp/mount/boot/uEnv.txt
+- Desfaça as alterações que fizeram o boot travar. Neste caso, comente as linhas que carregam suas DTOs
